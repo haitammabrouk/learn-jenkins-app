@@ -3,13 +3,21 @@ pipeline {
 
     stages {
         stage('Build') {
-            steps {
-                echo 'Build Begin...'
+            agent {
+                docker {
+                    image node:18-alpine
+                    reuseNode true
+                }
             }
-        }
-        stage('Test') {
             steps {
-                echo 'Testing Begin ...'
+                sh '''
+                    node --version
+                    npm --version
+                    ls -la
+                    npm ci
+                    ls -la
+                    npm run build
+                '''
             }
         }
     }
